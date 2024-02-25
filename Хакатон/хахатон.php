@@ -1,116 +1,98 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <title>Прiект</title>
-</head>
-<body>
-    <div class="box1">
-        <img class="img1" src="tinkoff.jpg" />
-        <img class="img2" src="58sch.png" />
-        <img class="img3" src="venya.png">
-    </div>
+<?php
+session_start();
+// Проверяем, была ли отправлена форма
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Получаем данные из формы
+    $name = $_POST['name'];
+    $budget = $_POST['budget'];
+    // Проверяем, что данные были получены
+    if (!empty($name) && !empty($budget)) {
+        // Формируем данные для отправки в формате multipart/form-data
+        $data = [
+            'name' => $name,
+            'budget' => $budget
+        ];
 
-    <div class="line"></div>
+        // URL REST API для отправки name и budget
+        $url = 'http://localhost:8080/tca/api/partners';
 
-    <br><br><br>
+        // Настройки запроса для отправки name и budget
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n" .
+                             "Accept: application/json\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            ]
+        ];
 
-    <div class="box2">
-        <form action="хахатон.php" method="post" id="userDataForm">
-            <input type="text" id="name" placeholder="Имя партнера" name="name" required>
-            <br>
-            <input type="text" id="budget" placeholder="Бюджет" name="budget" required>
-            <br>
-            <div class="box3">
-                <label class="input-file">
-                    <input type="file" name="file" id="file" onchange="fileUploaded()">
-                    <span class="input-file-btn" id="fileUploadText">Прикрепить базу данных</span>
-                </label>
-                <button class="button" type="button" onclick="submitForm()">Рассчитать</button>
-            </div>
-        </form>
-    </div>
+        // Отправляем запрос для отправки name и budget
+        $context  = stream_context_create($options);
+        $response = file_get_contents($url, false, $context);
 
-    <br><br><br>
-
-    <div class="box4" style="display: none;">
-        <div class="box41">
-            <div class="graphic" id="image-container"></div>
-            <div class="box5">
-                <h1 class="h1 name">Burger King</h1>
-                <div class="line 1"></div>
-                <br>
-                    <div class="text"><h2 class="h2 id">ID: 1487</h2></div>
-                    <div class="text"><h2 class="h2 budget">Бюджет: бургер и кортошка</h2></div>
-                    <div class="text"><h2 class="h2 budget_ost">Остаток бюджета: бургер</h2></div>
-                    <div class="text"><h2 class="h2 budget_lost">Уже потрачено: кортошка</h2></div>
-            </div>
-        </div>
-
-        <div class="box61" style="display: none;">
-            <div class="box6">
-                <div class="text1"><h3 class="h3 result">Дата окончания контракта:</h3></div>
-                <div class="text1"><h3 class="h3 num_result">32.03.2024</h3></div>
-            </div>
-
-            <div class="box7" style="display: none;">
-                <div class="text12"><h3 class="h31">Закрытие контракта не требуется</h3></div>
-            </div>
-        </div>
-    </div>
-
-    <br><br><br>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        function fileUploaded() {
-            document.getElementById("fileUploadText").innerText = "Файл загружен";
+        // Проверяем ответ
+        if ($response === false) {
+            // Если ответ не получен, возвращаем ошибку
+            http_response_code(500);
+            echo json_encode(['error' => 'Ошибка: не удалось отправить данные на сервер.']);
+            exit;
         }
 
-        function submitForm() {
-            var name = document.getElementById("name").value;
-            var budget = document.getElementById("budget").value;
-            var file = document.getElementById("file").files[0];
-            
-            var formData = new FormData();
-            formData.append('name', name);
-            formData.append('budget', budget);
-            formData.append('file', file);
+        // Проверяем, был ли загружен файл
+        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+            // Получаем имя файла
+            $filename = $_FILES['file']['name'];
 
-            $.ajax({
-                url: 'хахатон.php',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    document.querySelector('.box4').style.display = 'block';
-                    document.querySelector('.box61').style.display = 'block';
-                    document.querySelector('.box7').style.display = 'block';
-                    document.querySelector('.name').textContent = response.name;
-                    document.querySelector('.budget').textContent = response.budget;
+            // Получаем тип файла
+            $filetype = $_FILES['file']['type'];
 
-// Получение URL картинки с сервера
-                    $.ajax({
-                        url: 'get_image_url.php', // Путь к вашему PHP скрипту на сервере
-                        type: 'GET',
-                        success: function(response) {
-                            // Здесь response содержит URL картинки
-                            // Изменяем атрибут src элемента с классом graphic на полученный URL
-                            $('.graphic').html('<img src="' + response + '">');
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
+            // Получаем содержимое файла
+            $filecontent = file_get_contents($_FILES['file']['tmp_name']);
+
+            // URL REST API для отправки файла
+            $url_file = 'http://localhost:8080/tca/api/partners/upload'; // Измененный URL
+
+            // Настройки запроса для отправки файла
+            $options_file = [
+                'http' => [
+                    'header'  => "Content-type: multipart/form-data\r\n" .
+                                 "Accept: application/json\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query(['file' => new CURLFile($_FILES['file']['tmp_name'], $filetype, $filename)])
+                ]
+            ];
+
+            // Отправляем запрос для отправки файла
+            $context_file  = stream_context_create($options_file);
+            $response_file = file_get_contents($url_file, false, $context_file);
+
+            // Проверяем ответ
+            if ($response_file === false) {
+                // Если ответ не получен, возвращаем ошибку
+                http_response_code(500);
+                echo json_encode(['error' => 'Ошибка: не удалось отправить файл на сервер.']);
+                exit;
+            }
         }
-    </script>
-</body>
-</html>
+// Возвращаем данные в формате JSON
+        header('Content-Type: application/json');
+        echo json_encode([
+            'name' => $name,
+            'budget' => $budget,
+            // Добавленные данные, которые могли бы вернуться с сервера
+            'response' => json_decode($response), // Для примера
+            'file_upload_response' => json_decode($response_file) // Для примера
+        ]);
+
+    } else {
+        // Если данные не были получены, возвращаем ошибку
+        http_response_code(400);
+        echo json_encode(['error' => 'Ошибка: не удалось получить данные из формы.']);
+    }
+} else {
+    // Если форма не была отправлена, возвращаем ошибку
+    http_response_code(400);
+    echo json_encode(['error' => 'Ошибка: форма не была отправлена.']);
+}
+?>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,10 +42,10 @@
                 <h1 class="h1 name">Burger King</h1>
                 <div class="line 1"></div>
                 <br>
-                    <div class="text"><h2 class="h2 id">ID: 1487</h2></div>
-                    <div class="text"><h2 class="h2 budget"></h2></div>
-                    <div class="text"><h2 class="h2 budget_ost"></h2></div>
-                    <div class="text"><h2 class="h2 budget_lost"></h2></div>
+                <div class="text"><h2 class="h2 id">ID: 1487</h2></div>
+                <div class="text"><h2 class="h2 budget"></h2></div>
+                <div class="text"><h2 class="h2 budget_ost"></h2></div>
+                <div class="text"><h2 class="h2 budget_lost"></h2></div>
             </div>
         </div>
 
@@ -91,8 +90,13 @@
                     document.querySelector('.box7').style.display = 'block';
                     document.querySelector('.name').textContent = response.name;
                     document.querySelector('.budget').textContent = response.budget;
+                    document.querySelector('.id').textContent = response.id; // Обновление поля id
 
-// Получение URL картинки с сервера
+                    // Обновление полей result и num_result
+                    document.querySelector('.result').textContent = response.result;
+                    document.querySelector('.num_result').textContent = response.num_result;
+
+                    // Получение URL картинки с сервера
                     $.ajax({
                         url: 'хахатон.php', // Путь к вашему PHP скрипту на сервере
                         type: 'GET',
@@ -114,3 +118,4 @@
     </script>
 </body>
 </html>
+

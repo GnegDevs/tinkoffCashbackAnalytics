@@ -17,7 +17,7 @@
 
     <br><br><br>
 
-<div class="box2">
+    <div class="box2">
         <form action="хахатон.php" method="post" id="userDataForm">
             <input type="text" id="name" placeholder="Имя партнера" name="name" required>
             <br>
@@ -34,6 +34,7 @@
     </div>
 
     <br><br><br>
+
     <div class="box4" style="display: none;">
         <div class="box41">
             <div class="graphic" id="image-container"></div>
@@ -78,7 +79,7 @@
             formData.append('file', file);
 
             $.ajax({
-                url: 'handle_form.php',
+                url: 'хахатон.php',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -89,12 +90,3 @@
                     document.querySelector('.box7').style.display = 'block';
                     document.querySelector('.name').textContent = response.name;
                     document.querySelector('.budget').textContent = response.budget;
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
-        }
-    </script>
-</body>
-</html>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,10 +42,10 @@
                 <h1 class="h1 name">Burger King</h1>
                 <div class="line 1"></div>
                 <br>
-                    <div class="text"><h2 class="h2 id">ID: 1487</h2></div>
-                    <div class="text"><h2 class="h2 budget"></h2></div>
-                    <div class="text"><h2 class="h2 budget_ost"></h2></div>
-                    <div class="text"><h2 class="h2 budget_lost"></h2></div>
+                <div class="text"><h2 class="h2 id">ID: 1487</h2></div>
+                <div class="text"><h2 class="h2 budget"></h2></div>
+                <div class="text"><h2 class="h2 budget_ost"></h2></div>
+                <div class="text"><h2 class="h2 budget_lost"></h2></div>
             </div>
         </div>
 
@@ -86,19 +85,16 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    document.querySelector('.box4').style.display = 'block';
-                    document.querySelector('.box61').style.display = 'block';
-                    document.querySelector('.box7').style.display = 'block';
-                    document.querySelector('.name').textContent = response.name;
-                    document.querySelector('.budget').textContent = response.budget;
+                    $('.box4').css('display', 'block');
+                    $('.box61').css('display', 'block');
+                    $('.box7').css('display', 'block');
+                    $('.name').text(response.name);
+                    $('.budget').text(response.budget);
 
-// Получение URL картинки с сервера
                     $.ajax({
                         url: 'хахатон.php', // Путь к вашему PHP скрипту на сервере
                         type: 'GET',
                         success: function(response) {
-                            // Здесь response содержит URL картинки
-                            // Изменяем атрибут src элемента с классом graphic на полученный URL
                             $('.graphic').html('<img src="' + response + '">');
                         },
                         error: function(error) {
@@ -114,3 +110,4 @@
     </script>
 </body>
 </html>
+

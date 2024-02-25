@@ -72,9 +72,9 @@ def resetDatabaseHandler():
 
     return "", 201
 
-#@app.route("/tca/api/partners/<string:name>", methods=['GET'])
-#def generatePlotHandler(name):
-#    generatePlot(name)
+@app.route("/tca/api/partners/<string:name>", methods=['GET'])
+def generatePlotHandler(name):
+    Generateplot(name, getPartnerDataByName(name)["budget"])
 
 
 

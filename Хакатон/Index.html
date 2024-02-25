@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,3 +91,27 @@
                     document.querySelector('.box7').style.display = 'block';
                     document.querySelector('.name').textContent = response.name;
                     document.querySelector('.budget').textContent = response.budget;
+
+Максим Бебров, [25.02.2024 14:53]
+// Получение URL картинки с сервера
+                    $.ajax({
+                        url: 'get_image_url.php', // Путь к вашему PHP скрипту на сервере
+                        type: 'GET',
+                        success: function(response) {
+                            // Здесь response содержит URL картинки
+                            // Изменяем атрибут src элемента с классом graphic на полученный URL
+                            $('.graphic').html('<img src="' + response + '">');
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -64,7 +64,7 @@ def resetDatabaseHandler():
     file.save("database/", "temp_database.csv")
 
     with open("database/temp_database.csv", "r") as database:
-        csvReader = csv.reader(file=database, delimiter=",")
+        csvReader = csv.reader(database, delimiter=",")
         for row in csvReader:
             if not getPartnerDataByName(row[0]):
                 savePartnerData(row[0], 0)

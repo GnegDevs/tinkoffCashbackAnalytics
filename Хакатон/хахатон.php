@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 // Проверяем, была ли отправлена форма
@@ -75,7 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit;
             }
         }
-// Возвращаем данные в формате JSON
+
+        // Возвращаем данные в формате JSON
         header('Content-Type: application/json');
         echo json_encode([
             'name' => $name,
